@@ -74,6 +74,16 @@ Scenarios 23 and 24 are covered by the single test
 All required scenarios pass. Compilation, typecheck, lint, contract tests, and
 the frontend production build all succeed. No tests are failing.
 
+## Deployment verification (Ritual Chain)
+
+After deployment to Ritual Chain (chainId 1979) the contract was verified live:
+
+- `eth_getCode(0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7)` → non-empty runtime
+  bytecode (prefix `0x6080604052…`), not `0x`.
+- `nextBountyId()` → `1` (deployed initial value).
+- Ignition deploy receipt status: `SUCCESS`, block `38806866`,
+  tx `0xc10985e03d6791668ce30ad5f39fb179eed570558de1f295e6b878e83e79adb2`.
+
 ### Note
 
 The test suite uses the (functional but deprecated) `network.connect()` API,

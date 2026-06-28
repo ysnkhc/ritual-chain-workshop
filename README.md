@@ -210,11 +210,16 @@ npx hardhat run scripts/export-abi.ts
 | --- | --- |
 | Network | Ritual Chain |
 | Chain ID | 1979 |
-| Contract address | _pending deployment — see SUBMISSION.md_ |
-| Deploy tx hash | _pending deployment — see SUBMISSION.md_ |
+| Contract address | `0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7` |
+| Deploy tx hash | `0xc10985e03d6791668ce30ad5f39fb179eed570558de1f295e6b878e83e79adb2` |
+| Block number | 38806866 |
+| Deployer | `0xdeb0c9690beefbba42ec1ceb8b2c90d9b1bf045d` |
+| Explorer (contract) | https://explorer.ritualfoundation.org/address/0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7 |
+| Explorer (deploy tx) | https://explorer.ritualfoundation.org/tx/0xc10985e03d6791668ce30ad5f39fb179eed570558de1f295e6b878e83e79adb2 |
 
-Deployment requires a funded `DEPLOYER_PRIVATE_KEY`. See SUBMISSION.md for the
-exact values once deployed.
+Verified on-chain: `eth_getCode` returns non-empty runtime bytecode and
+`nextBountyId()` reads `1`. See SUBMISSION.md for the full Proof of Building
+values.
 
 ## Known limitations
 

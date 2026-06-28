@@ -4,9 +4,10 @@
 
 | Field | Value |
 | --- | --- |
-| GitHub fork URL | _pending — push requires GitHub auth (see "Remaining blockers")_ |
+| GitHub fork URL | https://github.com/ysnkhc/ritual-chain-workshop |
 | Branch | `feature/commit-reveal-bounty` |
-| Latest commit hash | `62b6cd855b76ff70c9fbb7e04bb1a6aa96a08deb` (branch tip before push; will advance if you push deploy artifacts) |
+| Branch URL | https://github.com/ysnkhc/ritual-chain-workshop/tree/feature/commit-reveal-bounty |
+| Latest commit hash | see `git log -1` on `feature/commit-reveal-bounty`; reported in the final Proof of Building output |
 
 ## Deployment
 
@@ -15,30 +16,36 @@
 | Network name | Ritual Chain |
 | Chain ID | 1979 (`0x7bb`, verified live via `eth_chainId`) |
 | RPC URL | https://rpc.ritualfoundation.org |
-| Deployed contract address | _pending — requires funded `DEPLOYER_PRIVATE_KEY`_ |
-| Deployment transaction hash | _pending — requires funded `DEPLOYER_PRIVATE_KEY`_ |
+| Deployed contract address | `0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7` |
+| Deployment transaction hash | `0xc10985e03d6791668ce30ad5f39fb179eed570558de1f295e6b878e83e79adb2` |
+| Block number | 38806866 |
+| Block hash | `0x606f1cf7c82a660f07b5699c7b0083d964c80048d0bf90cb9856e573d3753219` |
+| Deployer address | `0xdeb0c9690beefbba42ec1ceb8b2c90d9b1bf045d` |
 | Deployment command | `npx hardhat ignition deploy --network ritual ignition/modules/AIJudge.ts` |
 | Constructor arguments | none (`AIJudge` has no constructor) |
-| Timestamp | _set at deploy time_ |
-| Explorer base | https://explorer.ritualfoundation.org |
+| Deploy tooling | Hardhat 3 + Ignition (`AIJudgeModule`) |
 
-Explorer links (fill the values after deploying):
+Explorer links:
 
-- Contract: `https://explorer.ritualfoundation.org/address/<contract address>`
-- Deploy tx: `https://explorer.ritualfoundation.org/tx/<tx hash>`
+- Contract: https://explorer.ritualfoundation.org/address/0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7
+- Deploy tx: https://explorer.ritualfoundation.org/tx/0xc10985e03d6791668ce30ad5f39fb179eed570558de1f295e6b878e83e79adb2
+
+### On-chain verification
+
+- `eth_getCode(0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7)` returns non-empty
+  runtime bytecode (prefix `0x6080604052…`), not `0x`.
+- `nextBountyId()` reads `1` (the deployed initial value), confirming the
+  contract responds to calls.
+- Ignition receipt status: `SUCCESS`.
 
 ## Proof of Building form values
 
 ```
-GitHub Fork URL: <your fork URL, e.g. https://github.com/<you>/ritual-chain-workshop>
-Deployed Contract Address: <0x… 20-byte address from the Ignition deploy receipt>
-Deploy Transaction Hash: <0x… 32-byte tx hash from the Ignition deploy receipt>
-A step you struggled with: Returning the full bounty from getBounty hit a Solidity "stack too deep" error because the view returned twelve values at once; I resolved it by returning a single in-memory BountyView struct instead of a wide tuple, which also let me drop the verbose positional tuple parser in the frontend.
+GitHub Fork URL: https://github.com/ysnkhc/ritual-chain-workshop
+Deployed Contract Address: 0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7
+Deploy Transaction Hash: 0xc10985e03d6791668ce30ad5f39fb179eed570558de1f295e6b878e83e79adb2
+A step you struggled with: Returning the full bounty from getBounty caused a Solidity stack-too-deep error because the view returned twelve values. I fixed it by returning a single in-memory BountyView struct, which also simplified the frontend parser.
 ```
-
-> These three values cannot be fabricated. The contract address and tx hash come
-> from the actual Ignition deploy receipt; the fork URL comes from your GitHub
-> account. See "Remaining blockers" for exactly what is needed to fill them.
 
 ## A step that was genuinely difficult
 
@@ -93,16 +100,13 @@ the canonical batch that was judged can all be independently verified.
 - [x] Docs: README, ARCHITECTURE (with Mermaid + advanced TEE design), TEST_PLAN, SUBMISSION
 - [x] `.env` gitignored; `.env.example` placeholders only; no secrets committed
 - [x] Deployment network confirmed (Ritual Chain, chainId 1979) — not guessed
-- [ ] Deployed to Ritual Chain (needs funded `DEPLOYER_PRIVATE_KEY`)
-- [ ] Pushed to GitHub fork (needs GitHub auth)
-- [ ] Proof of Building form values filled with real address + tx hash
+- [x] Deployed to Ritual Chain (`0xB55F2eEE3a9C80a11d0c39516C010C07dE3757A7`, tx `0xc10985…79adb2`)
+- [x] Deployed bytecode verified on-chain via `eth_getCode` + `nextBountyId()` read
+- [x] Pushed to GitHub fork `ysnkhc/ritual-chain-workshop`, branch `feature/commit-reveal-bounty`
+- [x] Proof of Building form values filled with real address + tx hash
 
 ## Remaining blockers
 
-1. **Deployment** needs a funded deployer key. Provide it as
-   `DEPLOYER_PRIVATE_KEY` in `hardhat/.env` (gitignored) or via
-   `npx hardhat keystore set DEPLOYER_PRIVATE_KEY`. The matching account must
-   hold RITUAL on chain 1979 for gas. Do **not** paste the key into chat.
-2. **GitHub push** needs auth for your fork (a git credential / token, or `gh`
-   CLI login). Once authenticated I can add the remote and push
-   `feature/commit-reveal-bounty`.
+None. Code, tests, frontend build, deployment, on-chain verification, docs, and
+the GitHub push are all complete. The contract is live on Ritual Chain and the
+branch with final deployment docs is pushed to the fork.
