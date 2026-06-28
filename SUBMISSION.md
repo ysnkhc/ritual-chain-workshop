@@ -6,7 +6,7 @@
 | --- | --- |
 | GitHub fork URL | _pending — push requires GitHub auth (see "Remaining blockers")_ |
 | Branch | `feature/commit-reveal-bounty` |
-| Latest commit hash | _set after the final commit/push_ |
+| Latest commit hash | `62b6cd855b76ff70c9fbb7e04bb1a6aa96a08deb` (branch tip before push; will advance if you push deploy artifacts) |
 
 ## Deployment
 
