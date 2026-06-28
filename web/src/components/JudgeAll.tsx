@@ -6,6 +6,7 @@ import aiJudgeAbi from "@/abi/AIJudge";
 import { contractAddress, executorAddress } from "@/config/contract";
 import { ritualChain } from "@/config/wagmi";
 import type { Bounty } from "@/lib/bounty";
+import { canJudge } from "@/lib/bounty";
 import { buildJudgeAllLlmInput, type JudgeSubmission } from "@/lib/ritualLlm";
 import { useWriteTx } from "@/hooks/useWriteTx";
 import { useRitualWalletStatus } from "@/hooks/useRitualWalletStatus";
@@ -37,8 +38,8 @@ export function JudgeAll({
 
   const count = Number(bounty.submissionCount);
 
-  // Gate per spec: owner only, has submissions, not yet judged.
-  if (!isOwner || bounty.judged || bounty.finalized || count === 0) {
+  // Gate: owner only, reveal window closed, has submissions, not yet judged.
+  if (!isOwner || !canJudge(bounty) || count === 0) {
     return null;
   }
 
@@ -47,16 +48,25 @@ export function JudgeAll({
     setGatherError(null);
     setGathering(true);
     try {
-      // 1–2. Load every submission for this bounty.
+      // 1–2. Load every submission, keeping ONLY revealed ones. Unrevealed
+      //      commitments are excluded from judging (they have no plaintext).
       const submissions: JudgeSubmission[] = [];
       for (let i = 0; i < count; i++) {
-        const [submitter, answer] = await publicClient.readContract({
+        const [submitter, , answer, revealed] = await publicClient.readContract({
           address: contractAddress,
           abi: aiJudgeAbi,
           functionName: "getSubmission",
           args: [bountyId, BigInt(i)],
         });
-        submissions.push({ index: i, submitter, answer });
+        if (revealed) {
+          submissions.push({ index: i, submitter, answer });
+        }
+      }
+
+      if (submissions.length === 0) {
+        setGathering(false);
+        setGatherError("No revealed submissions to judge.");
+        return;
       }
 
       // 3–4. Build the batch judging prompt and encode the Ritual LLM request.

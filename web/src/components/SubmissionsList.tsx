@@ -71,7 +71,8 @@ function SubmissionRow({
   });
 
   const submitter = data?.[0];
-  const answer = data?.[1];
+  const answer = data?.[2];
+  const revealed = data?.[3];
 
   return (
     <div
@@ -91,6 +92,9 @@ function SubmissionRow({
           </span>
         </div>
         <div className="flex items-center gap-1.5">
+          <Badge tone={revealed ? "green" : "amber"}>
+            {revealed ? "revealed" : "committed"}
+          </Badge>
           {ranking ? <Badge tone="zinc">score {ranking.score}</Badge> : null}
           {isWinner ? (
             <Badge tone="green">Winner</Badge>
@@ -100,9 +104,16 @@ function SubmissionRow({
         </div>
       </div>
 
-      <p className="mt-2 whitespace-pre-wrap break-words text-sm text-zinc-200">
-        {answer ?? (isLoading ? "" : "-")}
-      </p>
+      {revealed ? (
+        <p className="mt-2 whitespace-pre-wrap break-words text-sm text-zinc-200">
+          {answer ?? (isLoading ? "" : "-")}
+        </p>
+      ) : (
+        <p className="mt-2 text-sm italic text-zinc-500">
+          Answer hidden — only a commitment hash is on-chain until this
+          participant reveals.
+        </p>
+      )}
 
       {ranking?.reason ? (
         <p className="mt-2 border-t border-white/5 pt-2 text-xs text-zinc-400">
