@@ -1,6 +1,15 @@
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable, defineConfig } from "hardhat/config";
 
+// Load `.env` into process.env (if present) so `configVariable(...)` can read
+// secrets like DEPLOYER_PRIVATE_KEY from it. `.env` is gitignored; secrets are
+// never committed. Falls back silently to the keystore / shell env when absent.
+try {
+  process.loadEnvFile(new URL("./.env", import.meta.url));
+} catch {
+  /* no .env file — use hardhat-keystore or shell environment variables */
+}
+
 export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],
   solidity: {
